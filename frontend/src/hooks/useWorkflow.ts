@@ -11,7 +11,8 @@ type PendingKey =
   | "next"
   | "start"
   | "stop"
-  | "reset";
+  | "restartOperation"
+  | "restartSetup";
 
 export function useWorkflow() {
   const [state, setState] = useState<StatePayload | null>(null);
@@ -75,7 +76,8 @@ export function useWorkflow() {
     nextStage: () => run("next", () => api.nextStage()),
     startOperation: () => run("start", () => api.startOperation()),
     stopOperation: () => run("stop", () => api.stopOperation()),
-    reset: () => run("reset", () => api.reset()),
+    restartOperation: () => run("restartOperation", () => api.restartOperation()),
+    restartSetup: () => run("restartSetup", () => api.reset()),
   };
 }
 

@@ -124,8 +124,12 @@ export function HMI() {
               progress={wf.progress}
               onStart={workflow.startOperation}
               onStop={workflow.stopOperation}
+              onRestartOperation={workflow.restartOperation}
+              onRestartSetup={workflow.restartSetup}
               startPending={workflow.isPending("start")}
               stopPending={workflow.isPending("stop")}
+              restartOperationPending={workflow.isPending("restartOperation")}
+              restartSetupPending={workflow.isPending("restartSetup")}
             />
           )}
 

@@ -54,5 +54,6 @@ export const api = {
     request<StatePayload>(`/api/workpiece-checks/${id}/confirm`, { method: "PUT" }),
   startOperation: () => request<StatePayload>("/api/operation/start", { method: "POST" }),
   stopOperation: () => request<StatePayload>("/api/operation/stop", { method: "POST" }),
+  restartOperation: () => request<StatePayload>("/api/operation/restart", { method: "POST" }),
   reset: () => request<StatePayload>("/api/reset", { method: "POST" }),
 };

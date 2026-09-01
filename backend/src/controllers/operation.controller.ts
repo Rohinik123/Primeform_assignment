@@ -47,3 +47,27 @@ export async function stopOperation(_req: Request, res: Response, next: NextFunc
     next(err);
   }
 }
+
+/**
+ * Resets a stopped operation back to READY at 0% so it can be started again.
+ * Unlike /api/reset, this only touches the operation status/progress — machine checks,
+ * tools, workpiece confirmations, and the current stage are left untouched.
+ */
+export async function restartOperation(_req: Request, res: Response, next: NextFunction) {
+  try {
+    const state = await getLiveWorkflowState();
+
+    if (state.currentStage !== "OPERATION" || state.operationStatus !== "STOPPED") {
+      throw new ApiError(409, "Operation must be stopped before it can be restarted.");
+    }
+
+    await prisma.workflowState.update({
+      where: { id: state.id },
+      data: { operationStatus: "READY", progress: 0, operationStartedAt: null },
+    });
+
+    res.json(await getFullState());
+  } catch (err) {
+    next(err);
+  }
+}
