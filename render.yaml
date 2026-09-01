@@ -13,10 +13,6 @@ services:
       - key: PORT
         value: 4000
       - key: DATABASE_URL
-        value: file:/var/data/prod.db
+        value: file:./prod.db
       - key: CORS_ORIGIN
         sync: false
-    disk:
-      name: vmc-hmi-data
-      mountPath: /var/data
-      sizeGB: 1

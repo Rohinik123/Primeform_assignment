@@ -192,24 +192,40 @@ material verified, drawing revision verified, G54 offset verified.
 
 ## Deployment
 
-The app deploys as two independent services plus a persistent SQLite
-volume for the backend.
+The app deploys as two independent services.
 
 ### Backend → Render
 
 A `render.yaml` blueprint is included at the repo root. In the Render
 dashboard: **New → Blueprint**, point it at this repository, and Render
-will provision the web service defined there, including a 1GB
-persistent disk mounted at `/var/data` (so the SQLite file survives
-restarts and deploys).
+will provision the `vmc-hmi-backend` web service defined there on the
+free plan.
 
 - `startCommand` runs `prisma migrate deploy`, then an **idempotent**
   seed step that only populates the demo data if the database is empty
-  (so redeploys never wipe an operator's in-progress state), then
+  (so a redeploy never wipes an operator's in-progress state), then
   starts the server.
 - Set the `CORS_ORIGIN` environment variable to your deployed frontend
   URL (Render will prompt for this since it's marked `sync: false`).
 - Health check path: `/api/health`.
+
+**A note on persistence on the free plan:** Render's free tier doesn't
+support persistent disks, so the SQLite file lives on the instance's
+local (ephemeral) storage. State survives normal use fine — page
+refreshes, navigating away and back — since that's the same running
+instance. It resets to the freshly-seeded demo scenario only when the
+instance itself restarts: after a redeploy, or after Render spins a
+free-tier service down from inactivity (~15 min) and back up. For this
+assignment that's a reasonable tradeoff (an interviewer always finds a
+clean demo); for real persistence across restarts, upgrade the service
+to the Starter plan and add a disk block back to `render.yaml`:
+```yaml
+    disk:
+      name: vmc-hmi-data
+      mountPath: /var/data
+      sizeGB: 1
+```
+(and point `DATABASE_URL` at `file:/var/data/prod.db` instead).
 
 Railway works equivalently: point it at `backend/` as the root
 directory, add a persistent volume mounted at the path used in
