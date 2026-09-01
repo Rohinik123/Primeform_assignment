@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Job {
+  id               Int    @id @default(autoincrement())
+  operationName    String
+  quantity         Int
+  material         String
+  drawingRevision  String
+  cncProgram       String
+  programRevision  String
+  fixture          String
+  workOffset       String
+}
+
+model MachineCheck {
+  id          Int     @id @default(autoincrement())
+  key         String  @unique
+  name        String
+  description String
+  order       Int
+  confirmed   Boolean @default(false)
+}
+
+model Tool {
+  id           Int     @id @default(autoincrement())
+  toolNumber   String  @unique
+  type         String
+  description  String
+  quantity     Int     @default(1)
+  cncProgram   String
+  programRev   String
+  order        Int
+  confirmed    Boolean @default(false)
+}
+
+model WorkpieceCheck {
+  id          Int     @id @default(autoincrement())
+  key         String  @unique
+  name        String
+  description String
+  order       Int
+  confirmed   Boolean @default(false)
+}
+
+model WorkflowState {
+  id                 Int       @id @default(autoincrement())
+  currentStage       String    @default("MACHINE_CHECKS")
+  operationStatus    String    @default("READY")
+  progress           Int       @default(0)
+  operationStartedAt DateTime?
+  updatedAt          DateTime  @updatedAt
+}
