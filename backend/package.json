@@ -16,7 +16,7 @@
     "deploy:start": "npm run prisma:migrate && npm run prisma:ensure-seed && npm start"
   },
   "engines": {
-    "node": ">=18.18"
+    "node": ">=18.18.0 <23.0.0"
   },
   "dependencies": {
     "@prisma/client": "^5.20.0",

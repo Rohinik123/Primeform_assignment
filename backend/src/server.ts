@@ -13,7 +13,9 @@ import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
 
 const app = express();
 const PORT = Number(process.env.PORT) || 4000;
-const CORS_ORIGIN = process.env.CORS_ORIGIN || "http://localhost:5173";
+// .trim() guards against a stray trailing newline/space in the platform's env var UI,
+// which would otherwise crash every response (Node rejects invalid chars in header values).
+const CORS_ORIGIN = (process.env.CORS_ORIGIN || "http://localhost:5173").trim();
 
 app.use(cors({ origin: CORS_ORIGIN }));
 app.use(express.json());
